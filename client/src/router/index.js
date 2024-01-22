@@ -1,9 +1,9 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Chat from "../views/Chat.vue";
-import Login from "../views/Login.vue";
-import Register from "../views/Register.vue";
+import LoginSignup from "../views/Login-signup.vue";
 
 import { isAuthenticated } from "../isAuth";
+// import { hasOwnMetadata } from "core-js/fn/reflect";
 
 const routes = [
   {
@@ -20,9 +20,9 @@ const routes = [
     },
   },
   {
-    path: "/login",
-    name: "Login",
-    component: Login,
+    path: "/login-signup",
+    name: "LoginSignup",
+    component: LoginSignup,
     beforeEnter: (to, from, next) => {
       // Check if user is authenticated
       if (!isAuthenticated()) {
@@ -32,19 +32,19 @@ const routes = [
       }
     },
   },
-  {
-    path: "/register",
-    name: "Register",
-    component: Register,
-    beforeEnter: (to, from, next) => {
-      // Check if user is authenticated
-      if (!isAuthenticated()) {
-        next(); // User is authenticated, proceed to the route
-      } else {
-        next("/"); // Redirect to Signin if not authenticated
-      }
-    },
-  },
+  // {
+  //   path: "/register",
+  //   name: "Register",
+  //   component: Register,
+  //   beforeEnter: (to, from, next) => {
+  //     // Check if user is authenticated
+  //     if (!isAuthenticated()) {
+  //       next(); // User is authenticated, proceed to the route
+  //     } else {
+  //       next("/"); // Redirect to Signin if not authenticated
+  //     }
+  //   },
+  // },
 ];
 
 const router = createRouter({

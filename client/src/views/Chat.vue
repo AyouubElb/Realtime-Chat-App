@@ -5,17 +5,41 @@
         <div
           v-for="(chat, index) in chats"
           :key="index"
-          @click="chatClicked(chat)"
+          @click="openChat(chat)"
         >
-          <UserChat :chat="chat" :onlineUsers="onlineUsers" />
+          <UserChat :chat="chat" />
+          <!-- <UserChat :chat="chat" :onlineUsers="onlineUsers" /> -->
         </div>
       </div>
       <div class="col-md-6 p-2 ms-auto">
-        <chatBox :clickedChat="clickedChat" :socket="socket" />
+        <chatBox :clickedChat="clickedChat" />
+        <!-- <chatBox :clickedChat="clickedChat" :socket="socket" /> -->
       </div>
     </div>
   </div>
 </template>
+<script setup>
+import UserChat from "../components/chat/UserChat";
+import chatBox from "../components/chat/chatBox";
+import { onMounted, ref, reactive } from "vue";
+import { useUserStore } from "../stores/user";
+const userStore = useUserStore();
+const chats = ref(null);
+const clickedChat = reactive({});
+
+const openChat = (chat) => {
+  clickedChat.id = chat._id;
+  clickedChat.members = chat.members;
+};
+
+onMounted(async () => {
+  const data = await userStore.fetchChats();
+  chats.value = data;
+  console.log("Test", data);
+});
+</script>
+
+<!--
 <script>
 import { API_URL } from "../config";
 import UserChat from "../components/chat/UserChat";
@@ -65,5 +89,6 @@ export default {
     //   });
   },
 };
-</script>
+</scrip>
+-->
 <style lang=""></style>

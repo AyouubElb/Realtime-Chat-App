@@ -6,12 +6,7 @@
         <form>
           <div class="form-group mb-3">
             <label for="name" class="text-light">name</label>
-            <input
-              type="text"
-              class="form-control"
-              id="name"
-              v-model="user.name"
-            />
+            <input type="text" class="form-control" id="name" v-model="name" />
           </div>
           <div class="form-group mb-3">
             <label for="email" class="text-light">email</label>
@@ -19,7 +14,7 @@
               type="email"
               class="form-control"
               id="email"
-              v-model="user.email"
+              v-model="email"
             />
           </div>
           <div class="form-group mb-3">
@@ -28,7 +23,7 @@
               type="password"
               class="form-control"
               id="password"
-              v-model="user.password"
+              v-model="password"
             />
           </div>
           <div class="d-grid gap-2">
@@ -41,50 +36,39 @@
     </div>
   </div>
 </template>
-<script>
-import { API_URL } from "../config";
+<script setup>
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { useUserStore } from "../stores/user";
 import toastr from "toastr";
+import axios from "axios";
 
-export default {
-  data() {
-    return {
-      user: {
-        name: "",
-        email: "",
-        password: "",
-      },
-    };
-  },
-  methods: {
-    register() {
-      fetch(`${API_URL}/users/register`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(this.user),
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          if (res.error) {
-            toastr.warning(res.error, "Please check form !", {
-              positionClass: "toast-bottom-left",
-            });
-          } else {
-            toastr.success("User is created SuccessFully", "New Account", {
-              positionClass: "toast-bottom-left",
-            });
-            this.$router.push("/login");
-          }
-        })
-        .catch((err) => {
-          toastr.error(err, "Server Error!", {
-            positionClass: "toast-bottom-left",
-          });
-        });
-    },
-  },
+const userStore = useUserStore();
+const router = useRouter();
+
+const name = ref("");
+const email = ref("");
+const password = ref("");
+
+const register = () => {
+  axios
+    .post(`${userStore.API_URL}/users/register`, {
+      name: name.value,
+      email: email.value,
+      password: password.value,
+    })
+    .then((res) => {
+      toastr.success("User is created SuccessFully", "New Account", {
+        positionClass: "toast-bottom-left",
+      });
+      router.push("/login");
+    })
+    .catch((err) => {
+      toastr.error(err, "Server Error!", {
+        positionClass: "toast-bottom-left",
+      });
+    });
 };
 </script>
+
 <style lang=""></style>

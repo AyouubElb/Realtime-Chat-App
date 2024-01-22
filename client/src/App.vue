@@ -1,16 +1,13 @@
 <template>
   <main>
-    <Navbar />
+    <Navbar v-if="userStore.isAuthenticated" />
     <router-view />
   </main>
 </template>
-<script>
+<script setup>
 import Navbar from "./components/Navbar.vue";
-export default {
-  components: {
-    Navbar,
-  },
-};
+import { useUserStore } from "./stores/user";
+const userStore = useUserStore();
 </script>
 
 <style></style>

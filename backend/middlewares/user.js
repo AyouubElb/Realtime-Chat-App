@@ -1,6 +1,7 @@
 const User = require("../models/userModel");
 
 exports.userById = (req, res, next, id) => {
+  console.log("TEST", User.findById(id));
   User.findById(id)
     .exec()
     .then((user) => {

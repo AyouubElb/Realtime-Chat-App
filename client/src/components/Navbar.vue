@@ -4,20 +4,10 @@
       <router-link class="nav-link text-light mt-2" to="/">
         <h4>ChattApp</h4>
       </router-link>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0 mx-4"></ul>
-        <ul class="navbar-nav ml-auto mb-2 mb-lg-0 mx-4">
-          <li class="nav-item mx-2" v-if="!isAuthenticated()">
-            <router-link class="nav-link text-light" to="/login"
-              >Login</router-link
-            >
-          </li>
-          <li class="nav-item" v-if="!isAuthenticated()">
-            <router-link class="nav-link text-light" to="/register"
-              >Register</router-link
-            >
-          </li>
-          <li class="nav-item mx-2" v-if="isAuthenticated()">
+      <span class="text-warning">Logged in as UserName</span>
+      <div class="navbar-collapse ml-auto">
+        <ul class="navbar-nav mb-2 mx-4">
+          <li class="nav-item mx-2">
             <span
               class="nav-link text-light"
               style="cursor: pointer"
@@ -31,18 +21,10 @@
   </nav>
 </template>
 <script setup>
+import { ref } from "vue";
 import { API_URL } from "../config";
 import toastr from "toastr";
 import axios from "axios";
-
-const isAuthenticated = () => {
-  const jwt = localStorage.getItem("jwt_info");
-  if (jwt) {
-    return JSON.parse(jwt);
-  }
-
-  return false;
-};
 
 const signOut = () => {
   axios
@@ -59,4 +41,9 @@ const signOut = () => {
 };
 </script>
 
-<style lang=""></style>
+<style>
+.navbar-collapse {
+  /* make it take only the width of its content(important for ml-auto) */
+  flex-grow: 0 !important;
+}
+</style>

@@ -10,8 +10,8 @@ exports.requireSignIn = jwt({
 });
 
 exports.isAuth = (req, res, next) => {
-  // console.log("auth", req.auth);
-  // console.log("profile", req.profile);
+  console.log("auth", req.auth);
+  console.log("profile", req.profile);
   let user = req.profile && req.auth && req.profile._id == req.auth._id;
   if (!user) {
     return res.status(404).json({

@@ -10,7 +10,8 @@ const { userById } = require("../middlewares/user");
 
 const router = express.Router();
 
-router.post("/:userId", requireSignIn, isAuth, createMessage);
+// router.post("/:userId", requireSignIn, isAuth, createMessage);
+router.post("/:userId", createMessage);
 router.get("/:chatId", getMessages);
 
 router.param("userId", userById);
