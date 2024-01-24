@@ -1,11 +1,13 @@
 <template>
   <main>
-    <Navbar v-if="userStore.isAuthenticated" />
+    <!-- <Navbar v-if="userStore.isAuthenticated" /> -->
+    <Sidebar />
     <router-view />
   </main>
 </template>
 <script setup>
 import Navbar from "./components/Navbar.vue";
+import Sidebar from "./components/Sidebar.vue";
 import { useUserStore } from "./stores/user";
 const userStore = useUserStore();
 </script>

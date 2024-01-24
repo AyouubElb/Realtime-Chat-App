@@ -1,17 +1,11 @@
 <template lang="">
-  <div class="container mt-4 px-4">
+  <div class="chat-section">
     <div class="row">
-      <div class="col-md-5 message-box flex-grow-0 pe-3 pt-3">
-        <div
-          v-for="(chat, index) in chats"
-          :key="index"
-          @click="openChat(chat)"
-        >
-          <UserChat :chat="chat" />
-          <!-- <UserChat :chat="chat" :onlineUsers="onlineUsers" /> -->
-        </div>
+      <div class="message-box col-md-3 flex-grow-0 pt-4">
+        <UserChat />
+        <!-- <UserChat :chat="chat" :onlineUsers="onlineUsers" /> -->
       </div>
-      <div class="col-md-6 p-2 ms-auto">
+      <div class="chat-box col-md-9">
         <chatBox :clickedChat="clickedChat" />
         <!-- <chatBox :clickedChat="clickedChat" :socket="socket" /> -->
       </div>
@@ -24,19 +18,19 @@ import chatBox from "../components/chat/chatBox";
 import { onMounted, ref, reactive } from "vue";
 import { useUserStore } from "../stores/user";
 const userStore = useUserStore();
-const chats = ref(null);
-const clickedChat = reactive({});
+// const chats = ref(null);
+// const clickedChat = reactive({});
 
-const openChat = (chat) => {
-  clickedChat.id = chat._id;
-  clickedChat.members = chat.members;
-};
+// const openChat = (chat) => {
+//   clickedChat.id = chat._id;
+//   clickedChat.members = chat.members;
+// };
 
-onMounted(async () => {
-  const data = await userStore.fetchChats();
-  chats.value = data;
-  console.log("Test", data);
-});
+// onMounted(async () => {
+//   const data = await userStore.fetchChats();
+//   chats.value = data;
+//   console.log("Test", data);
+// });
 </script>
 
 <!--
@@ -91,4 +85,35 @@ export default {
 };
 </scrip>
 -->
-<style lang=""></style>
+<style>
+.chat-section {
+  height: 100vh;
+  width: 100%;
+}
+.row {
+  padding: 0;
+}
+.row > * {
+  padding: 0 !important;
+}
+.message-box {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #3a4042;
+}
+
+.message-box :hover {
+  background-color: #4d5355;
+}
+
+/* Chat Box */
+.chat-box {
+  overflow-y: auto;
+  background: #222831;
+  border-radius: 10px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+</style>

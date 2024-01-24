@@ -1,38 +1,39 @@
 <template lang="">
-  <div class="chat-box">
-    <div class="chat-header">
-      <strong>{{ contact.name }}</strong>
+  <div class="chat-header">
+    <div class="chat-header-icon">
+      <img :src="require('../../assets/nftIcon.svg')" alt="" />
     </div>
-    <div class="messages py-4">
-      <div
-        class="message flex-grow-0 mb-2"
-        :class="{
-          'self ms-auto': message.senderId == userStore.user._id,
-          '': message.senderId != userStore.user._id,
-        }"
-        v-for="(message, index) in messages"
-        :key="index"
-      >
-        <p style="margin-bottom: 0.2rem">
-          {{ message.text }}
-        </p>
-        <p style="margin-bottom: 0.2rem" class="message-footer">
-          {{ formatTimestamp(message.createdAt) }}
-        </p>
-      </div>
+    <strong>{{ contact.name }}</strong>
+  </div>
+  <div class="messages py-4">
+    <div
+      class="message flex-grow-0 mb-2"
+      :class="{
+        'self ms-auto': message.senderId == userStore.user._id,
+        '': message.senderId != userStore.user._id,
+      }"
+      v-for="(message, index) in messages"
+      :key="index"
+    >
+      <p style="margin-bottom: 0.2rem">
+        {{ message.text }}
+      </p>
+      <p style="margin-bottom: 0.2rem" class="message-footer">
+        {{ formatTimestamp(message.createdAt) }}
+      </p>
     </div>
-    <div class="chat-input flex-grow-0">
-      <input
-        type="text"
-        class="input px-3 py-1 mx-2"
-        placeholder="Type a message"
-        v-model="newMessage"
-        @keyup.enter="sendMessageHandler()"
-      />
-      <button class="btn send-btn" @click="sendMessageHandler()">
-        <i class="bi bi-send-fill button-icon"></i>
-      </button>
-    </div>
+  </div>
+  <div class="chat-input">
+    <input
+      type="text"
+      class="input px-3 py-2 mx-2"
+      placeholder="Type a message"
+      v-model="newMessage"
+      @keyup.enter="sendMessageHandler()"
+    />
+    <!-- <button class="btn send-btn" @click="sendMessageHandler()">
+      <i class="bi bi-send-fill button-icon"></i>
+    </button> -->
   </div>
 </template>
 <script setup>
@@ -47,17 +48,11 @@ const messages = reactive([]);
 const messageInfo = reactive({});
 const newMessage = ref("");
 
-const props = defineProps({
-  clickedChat: {
-    type: Object,
-    required: true,
-  },
-});
-console.log("clickedChat", props.clickedChat);
+console.log("clickedChat", userStore.clickedChat);
 
 watchEffect(() => {
-  if (props.clickedChat.members) {
-    const id = props.clickedChat.members.find(
+  if (userStore.clickedChat?.members) {
+    const id = userStore.clickedChat.members.find(
       (id) => id !== userStore.user._id
     );
     console.log("ID", id);
@@ -65,7 +60,7 @@ watchEffect(() => {
     userStore.fetchUserById(id).then((res) => {
       contact.name = res.name;
     });
-    userStore.fetchChatMessages(props.clickedChat.id).then((res) => {
+    userStore.fetchChatMessages(userStore.clickedChat.id).then((res) => {
       messages.splice(0, messages.length, ...res); // Update messages with the fetched messages
       console.log("MESSAGES", messages);
     });
@@ -78,7 +73,7 @@ const formatTimestamp = (timestamp) => {
 };
 
 const sendMessageHandler = () => {
-  (messageInfo.chatId = props.clickedChat.id),
+  (messageInfo.chatId = userStore.clickedChat.id),
     (messageInfo.senderId = userStore.user._id);
   messageInfo.text = newMessage.value;
   userStore.sendMessage(messageInfo);
@@ -201,4 +196,67 @@ const sendMessageHandler = () => {
 // };
 </script>
 
-<style lang=""></style>
+<style>
+/* Chat Header */
+.chat-header {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: #313538;
+}
+
+.chat-header-icon img {
+  width: 2rem;
+  border-radius: 50%;
+}
+/* Messages */
+.messages {
+  max-height: calc(100vh - 15rem);
+  overflow-y: auto;
+  padding: 0 2rem;
+}
+
+.message {
+  color: white;
+  background: #282828;
+  padding: 0.25rem;
+  border-radius: 5px;
+
+  max-width: 40%;
+}
+
+.message.self {
+  background: #0092ca;
+}
+
+.message-footer {
+  font-size: 12px;
+  align-self: flex-end;
+  font-weight: 400;
+}
+.chat-input {
+  width: 100%;
+  /* background: rgb(30, 30, 30); */
+  padding: 1rem;
+  margin-top: auto;
+}
+
+.input {
+  width: 95%;
+  border-radius: 8px;
+}
+/* .send-btn {
+  border: none;
+  background: rgba(72, 112, 223, 1);
+  color: whitesmoke;
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+}
+
+.button-icon {
+  display: flex;
+  justify-content: center;
+} */
+</style>
