@@ -15,7 +15,7 @@
       <img :src="require('../../assets/nftIcon.svg')" alt="" />
     </div>
     <div class="text-content">
-      <div class="name" v-if="chat">{{ chat.name }}</div>
+      <div class="name" v-if="chat.friendInfo">{{ chat.friendInfo.name }}</div>
       <div class="name" v-else>
         <!-- Placeholder or loading state while user information is being fetched -->
         Loading user information...
@@ -61,14 +61,22 @@ onMounted(async () => {
   const data = await userStore.fetchChats();
   chats.value = data;
   console.log("Test", data);
+  // Fetch user information for each chat member
+  for (let i = 0; i < chats.value.length; i++) {
+    const chat = chats.value[i];
+    const memberId = chat.members.find((id) => id !== userStore.user._id);
+    const friendInfo = await userStore.fetchUserById(memberId);
+    // Assign the user information to the chat object
+    chats.value[i].friendInfo = friendInfo;
+  }
 });
 
-watchEffect(() => {
-  const id = chat.members.find((id) => id !== userStore.user._id);
-  userStore.fetchUserById(id).then((res) => {
-    userInfo.value = res;
-  });
-});
+// watchEffect(() => {
+//   const id = chat.members.find((id) => id !== userStore.user._id);
+//   userStore.fetchUserById(id).then((res) => {
+//     userInfo.value = res;
+//   });
+// });
 </script>
 
 <script>
