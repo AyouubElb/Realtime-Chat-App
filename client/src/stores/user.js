@@ -53,7 +53,6 @@ export const useUserStore = defineStore("UserStore", {
     },
     async sendMessage(messageInfo) {
       try {
-        console.log("messageInfo", messageInfo);
         const res = await axios.post(
           `${this.API_URL}/messages/${messageInfo.senderId}`,
           messageInfo

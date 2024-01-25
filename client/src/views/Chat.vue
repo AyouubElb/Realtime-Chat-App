@@ -1,15 +1,15 @@
 <template lang="">
   <div class="chat-section">
-    <div class="row">
-      <div class="message-box col-md-3 flex-grow-0 pt-4">
-        <UserChat />
-        <!-- <UserChat :chat="chat" :onlineUsers="onlineUsers" /> -->
-      </div>
-      <div class="chat-box col-md-9">
-        <chatBox :clickedChat="clickedChat" />
-        <!-- <chatBox :clickedChat="clickedChat" :socket="socket" /> -->
-      </div>
+    <!-- <div class="row"> -->
+    <div class="message-box pt-4">
+      <UserChat />
+      <!-- <UserChat :chat="chat" :onlineUsers="onlineUsers" /> -->
     </div>
+    <div class="chat-box">
+      <chatBox :clickedChat="clickedChat" />
+      <!-- <chatBox :clickedChat="clickedChat" :socket="socket" /> -->
+    </div>
+    <!-- </div> -->
   </div>
 </template>
 <script setup>
@@ -87,31 +87,24 @@ export default {
 -->
 <style>
 .chat-section {
+  display: flex;
   height: 100vh;
   width: 100%;
   overflow: hidden;
 }
-.row {
-  padding: 0;
-}
-.row > * {
-  padding: 0 !important;
-}
 .message-box {
   display: flex;
   flex-direction: column;
+  width: 25%;
   height: 100vh;
   background-color: #3a4042;
-}
-
-.message-box :hover {
-  background-color: #4d5355;
 }
 
 /* Chat Box */
 .chat-box {
   background: #222831;
   border-radius: 10px;
+  width: 75%;
   height: 100vh;
   display: flex;
   flex-direction: column;

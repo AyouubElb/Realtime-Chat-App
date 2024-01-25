@@ -5,6 +5,10 @@
   <div class="contact-search">
     <input type="text" placeholder="Find or start a conversation" />
   </div>
+  <div class="add-friend">
+    <p>Personal Messages</p>
+    <i class="bi bi-plus-square"></i>
+  </div>
   <div
     class="contact-card"
     v-for="(chat, index) in chats"
@@ -16,10 +20,6 @@
     </div>
     <div class="text-content">
       <div class="name" v-if="chat.friendInfo">{{ chat.friendInfo.name }}</div>
-      <div class="name" v-else>
-        <!-- Placeholder or loading state while user information is being fetched -->
-        Loading user information...
-      </div>
       <div class="text">Text Message</div>
     </div>
     <div class="notification-container">
@@ -144,7 +144,21 @@ onMounted(async () => {
   border: #d3d3d3 1px solid;
   border-radius: 5px;
   color: #d3d3d3;
+  padding: 0.25rem 1rem;
+}
+.add-friend {
+  display: flex;
+  color: #d3d3d3;
   padding-inline: 1rem;
+}
+.add-friend p {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.add-friend i {
+  margin-left: auto;
+  cursor: pointer;
 }
 /* User Card */
 .contact-card {
@@ -154,6 +168,11 @@ onMounted(async () => {
   display: flex;
   margin-inline: auto;
   padding: 0.75rem 1rem;
+  cursor: pointer;
+}
+
+.contact-card:hover {
+  background-color: #4d5355;
 }
 
 .contact-card-icon img {

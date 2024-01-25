@@ -29,9 +29,6 @@
       v-model="newMessage"
       @keyup.enter="sendMessageHandler()"
     />
-    <!-- <button class="btn send-btn" @click="sendMessageHandler()">
-      <i class="bi bi-send-fill button-icon"></i>
-    </button> -->
   </div>
 </template>
 <script setup>
@@ -97,6 +94,7 @@ const sendMessageHandler = () => {
     (messageInfo.senderId = userStore.user._id);
   messageInfo.text = newMessage.value;
   userStore.sendMessage(messageInfo);
+  newMessage.value = "";
 };
 </script>
 
@@ -232,7 +230,7 @@ const sendMessageHandler = () => {
 }
 /* Messages */
 .messages {
-  max-height: calc(100vh - 10rem);
+  max-height: 100vh;
   overflow-y: auto;
   margin-top: auto;
   padding: 0 2rem;
@@ -244,9 +242,6 @@ const sendMessageHandler = () => {
   background: #282828;
   padding: 0.25rem;
   border-radius: 5px;
-  word-wrap: break-word; /* Allow long words to wrap to the next line */
-  white-space: pre-line; /* Preserve line breaks in the message text */
-  overflow-wrap: break-word; /* Ensure that long words wrap within the container */
   max-width: 30%; /* Adjust the maximum width as needed */
 }
 

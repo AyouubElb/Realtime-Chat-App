@@ -14,14 +14,6 @@ const app = createApp(App);
 app.use(createPinia());
 
 // Create a global socket instance
-// app.config.globalProperties.$socket = io("http://localhost:3000"); // Replace with your server URL
-
-// user & token value
-const jwt = localStorage.getItem("jwt_info");
-if (jwt) {
-  const parsedJwt = JSON.parse(jwt);
-  app.config.globalProperties.$user = parsedJwt.user;
-  app.config.globalProperties.$token = parsedJwt.token;
-}
+app.config.globalProperties.$socket = io("http://localhost:3000"); // Replace with your server URL
 
 app.use(router).mount("#app");
