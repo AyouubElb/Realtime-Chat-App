@@ -5,9 +5,9 @@
     </div>
     <strong>{{ contact.name }}</strong>
   </div>
-  <div class="messages py-4">
+  <div class="messages" ref="messagesContainer">
     <div
-      class="message flex-grow-0 mb-2"
+      class="message mb-2"
       :class="{
         'self ms-auto': message.senderId == userStore.user._id,
         '': message.senderId != userStore.user._id,
@@ -15,10 +15,8 @@
       v-for="(message, index) in messages"
       :key="index"
     >
-      <p style="margin-bottom: 0.2rem">
-        {{ message.text }}
-      </p>
-      <p style="margin-bottom: 0.2rem" class="message-footer">
+      <p style="margin-bottom: 0.2rem">{{ message.text }}</p>
+      <p style="margin-bottom: 0.2rem" class="message-date">
         {{ formatTimestamp(message.createdAt) }}
       </p>
     </div>
@@ -38,7 +36,14 @@
 </template>
 <script setup>
 import { API_URL } from "../../config";
-import { defineProps, ref, reactive, watchEffect } from "vue";
+import {
+  defineProps,
+  onMounted,
+  onUpdated,
+  ref,
+  reactive,
+  watchEffect,
+} from "vue";
 import { useUserStore } from "../../stores/user.js";
 import moment from "moment/moment";
 
@@ -47,8 +52,23 @@ const contact = reactive({});
 const messages = reactive([]);
 const messageInfo = reactive({});
 const newMessage = ref("");
+const messagesContainer = ref(null);
 
-console.log("clickedChat", userStore.clickedChat);
+// Scroll to the bottom of the messages container
+const scrollToBottom = () => {
+  if (messagesContainer.value) {
+    messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+  }
+};
+
+onMounted(() => {
+  scrollToBottom();
+});
+
+onUpdated(() => {
+  scrollToBottom();
+});
+/**************/
 
 watchEffect(() => {
   if (userStore.clickedChat?.members) {
@@ -68,8 +88,8 @@ watchEffect(() => {
 });
 
 const formatTimestamp = (timestamp) => {
-  // console.log(timestamp);
-  return moment(timestamp).format("YYYY-MM-DD HH:mm");
+  // return moment(timestamp).format("YYYY-MM-DD HH:mm");
+  return moment(timestamp).format("HH:mm");
 };
 
 const sendMessageHandler = () => {
@@ -212,34 +232,37 @@ const sendMessageHandler = () => {
 }
 /* Messages */
 .messages {
-  max-height: calc(100vh - 15rem);
+  max-height: calc(100vh - 10rem);
   overflow-y: auto;
+  margin-top: auto;
   padding: 0 2rem;
 }
 
 .message {
+  display: flex;
   color: white;
   background: #282828;
   padding: 0.25rem;
   border-radius: 5px;
-
-  max-width: 40%;
+  word-wrap: break-word; /* Allow long words to wrap to the next line */
+  white-space: pre-line; /* Preserve line breaks in the message text */
+  overflow-wrap: break-word; /* Ensure that long words wrap within the container */
+  max-width: 30%; /* Adjust the maximum width as needed */
 }
 
 .message.self {
   background: #0092ca;
 }
 
-.message-footer {
+.message-date {
   font-size: 12px;
-  align-self: flex-end;
+  margin-left: auto;
   font-weight: 400;
 }
 .chat-input {
   width: 100%;
   /* background: rgb(30, 30, 30); */
   padding: 1rem;
-  margin-top: auto;
 }
 
 .input {

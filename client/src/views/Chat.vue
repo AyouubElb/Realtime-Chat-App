@@ -89,6 +89,7 @@ export default {
 .chat-section {
   height: 100vh;
   width: 100%;
+  overflow: hidden;
 }
 .row {
   padding: 0;
@@ -109,7 +110,6 @@ export default {
 
 /* Chat Box */
 .chat-box {
-  overflow-y: auto;
   background: #222831;
   border-radius: 10px;
   height: 100vh;
