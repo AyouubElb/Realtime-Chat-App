@@ -15,7 +15,7 @@ const routes = [
       if (isAuthenticated()) {
         next(); // User is authenticated, proceed to the route
       } else {
-        next("/login"); // Redirect to Signin if not authenticated
+        next("/login-signup"); // Redirect to Signin if not authenticated
       }
     },
   },

@@ -26,29 +26,34 @@
       <div class="date">12/12/2022</div>
       <div class="this-user-notifications">2</div>
     </div>
-    <!-- <span
-          :class="{
-            'user-online': userOnline,
-          }"
-        ></span> -->
+    <span
+      :class="{
+        'contact-online':
+          chat.friendInfo && isFriendOnline(chat.friendInfo._id),
+      }"
+    ></span>
   </div>
 </template>
 <script setup>
 import { API_URL } from "../../config";
-import { defineProps, ref, reactive, onMounted, watchEffect } from "vue";
+import {
+  defineProps,
+  ref,
+  reactive,
+  onMounted,
+  watchEffect,
+  computed,
+} from "vue";
 import { useUserStore } from "../../stores/user.js";
+import { io } from "socket.io-client";
 import axios from "axios";
 const userStore = useUserStore();
+const socket = userStore.socket;
+
 const chats = ref(null);
-// const props = defineProps({
-//   chat: {
-//     type: Object,
-//     required: true,
-//   },
-//   onlineUsers: Object,
-// });
 const clickedChat = reactive({});
 const userInfo = ref(null);
+const onlineUsersList = reactive([]);
 
 const openChat = (chat) => {
   clickedChat.id = chat._id;
@@ -61,6 +66,7 @@ onMounted(async () => {
   const data = await userStore.fetchChats();
   chats.value = data;
   console.log("Test", data);
+  userStore.sendNewUser();
   // Fetch user information for each chat member
   for (let i = 0; i < chats.value.length; i++) {
     const chat = chats.value[i];
@@ -71,12 +77,30 @@ onMounted(async () => {
   }
 });
 
-// watchEffect(() => {
-//   const id = chat.members.find((id) => id !== userStore.user._id);
-//   userStore.fetchUserById(id).then((res) => {
-//     userInfo.value = res;
-//   });
-// });
+watchEffect(() => {
+  // get online users
+  if (socket != null) {
+    socket.on("getOnlineUsers", (onlineUsers) => {
+      onlineUsers.forEach((user) => {
+        onlineUsersList.push({ user });
+      });
+      // console.log("onlineUsersLi", onlineUsersList);
+    });
+  }
+});
+
+const isFriendOnline = (friendId) => {
+  if (onlineUsersList) {
+    console.log("Friend ID", friendId);
+    console.log("onlineUsersList", onlineUsersList);
+    const isOnline = onlineUsersList.some((onlineUser) => {
+      console.log("Test", onlineUser.user.userId);
+      return onlineUser.user.userId === friendId;
+    });
+    return isOnline;
+  }
+  return false;
+};
 </script>
 
 <script>
@@ -208,11 +232,9 @@ onMounted(async () => {
   width: 12px;
   border-radius: 50%;
   background: rgb(0, 219, 0);
-  position: absolute;
-  top: -3px;
-  right: -3px;
   z-index: 2;
 }
+
 .this-user-notifications {
   display: flex;
   background: #0092ca;

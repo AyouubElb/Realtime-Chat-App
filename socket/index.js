@@ -17,22 +17,15 @@ io.on("connection", (socket) => {
         userId,
         socketId: socket.id,
       });
-    console.log("onlineUser : ", onlineUsers);
+    // console.log("onlineUser : ", onlineUsers);
 
     io.emit("getOnlineUsers", onlineUsers);
   });
 
   socket.on("sendMessage", (data) => {
-    const recipientUser = onlineUsers.filter(
-      (user) => user.userId != data.senderId
-    );
+    console.log("sendMessage : ", data);
 
-    console.log("recipientUser : ", recipientUser);
-
-    if (recipientUser) {
-      console.log("test");
-      socket.broadcast.emit("receiveMessage", data);
-    }
+    socket.broadcast.emit("receiveMessage", data);
   });
 
   socket.on("disconnect", () => {

@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import axios from "axios";
+import { io } from "socket.io-client";
 
 export const useUserStore = defineStore("UserStore", {
   state: () => {
@@ -23,8 +24,21 @@ export const useUserStore = defineStore("UserStore", {
     user() {
       return JSON.parse(this.jwt).data.user;
     },
+    friendId() {
+      const id = this.clickedChat.members.find((id) => id !== this.user._id);
+      return id;
+    },
+    socket() {
+      return io("http://localhost:3000");
+    },
   },
   actions: {
+    sendNewUser() {
+      if (this.$socket != null) {
+        this.$socket.emit("addNewUser", this.$user._id);
+      }
+    },
+
     async fetchChats() {
       try {
         const res = await axios.get(`${this.API_URL}/chats/${this.user._id}`);

@@ -17,20 +17,16 @@ import UserChat from "../components/chat/UserChat";
 import chatBox from "../components/chat/chatBox";
 import { onMounted, ref, reactive } from "vue";
 import { useUserStore } from "../stores/user";
+import { io } from "socket.io-client";
 const userStore = useUserStore();
-// const chats = ref(null);
-// const clickedChat = reactive({});
+const socket = userStore.socket;
 
-// const openChat = (chat) => {
-//   clickedChat.id = chat._id;
-//   clickedChat.members = chat.members;
-// };
-
-// onMounted(async () => {
-//   const data = await userStore.fetchChats();
-//   chats.value = data;
-//   console.log("Test", data);
-// });
+onMounted(() => {
+  if (socket != null) {
+    // console.log("socket", socket);
+    socket.emit("addNewUser", userStore.user._id);
+  }
+});
 </script>
 
 <!--

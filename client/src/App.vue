@@ -1,7 +1,7 @@
 <template>
   <main>
     <!-- <Navbar v-if="userStore.isAuthenticated" /> -->
-    <Sidebar />
+    <Sidebar v-if="userStore.isAuthenticated" />
     <router-view />
   </main>
 </template>
