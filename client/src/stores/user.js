@@ -71,7 +71,7 @@ export const useUserStore = defineStore("UserStore", {
           `${this.API_URL}/messages/${messageInfo.senderId}`,
           messageInfo
         );
-        console.log("message response", res);
+        // console.log("message response", res);
       } catch (error) {
         console.log(error);
       }

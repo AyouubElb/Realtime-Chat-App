@@ -91,7 +91,7 @@ export default {
 .message-box {
   display: flex;
   flex-direction: column;
-  width: 25%;
+  min-width: 250px;
   height: 100vh;
   background-color: #3a4042;
 }
@@ -99,8 +99,7 @@ export default {
 /* Chat Box */
 .chat-box {
   background: #222831;
-  border-radius: 10px;
-  width: 75%;
+  width: 100%;
   height: 100vh;
   display: flex;
   flex-direction: column;

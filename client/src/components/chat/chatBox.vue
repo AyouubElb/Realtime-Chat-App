@@ -34,8 +34,8 @@
 <script setup>
 import { API_URL } from "../../config";
 import {
-  defineProps,
   onMounted,
+  onBeforeUnmount,
   onUpdated,
   ref,
   reactive,
@@ -72,23 +72,26 @@ onUpdated(() => {
 watchEffect(() => {
   if (userStore.clickedChat?.members) {
     const id = userStore.friendId;
-    console.log("ID", id);
+    // console.log("ID", id);
 
     userStore.fetchUserById(id).then((res) => {
       contact.name = res.name;
     });
     userStore.fetchChatMessages(userStore.clickedChat.id).then((res) => {
-      console.log("messages", res);
+      // console.log("messages", res);
       messages.splice(0, messages.length, ...res); // Update messages with the fetched messages
-      console.log("MESSAGES", messages);
+      // console.log("MESSAGES", messages);
     });
   }
+  const handleReceiveMessage = (data) => {
+    messages.push(data);
+  };
 
-  socket.on("receiveMessage", (data) => {
-    // Handle the received message here
-    console.log("Received a new message:", data);
+  socket.on("receiveMessage", handleReceiveMessage);
 
-    // messages.push(data);
+  // Clean up the event listener when the component is unmounted
+  onBeforeUnmount(() => {
+    socket.off("receiveMessage", handleReceiveMessage);
   });
 });
 
@@ -98,24 +101,23 @@ const formatTimestamp = (timestamp) => {
 };
 
 const sendMessageHandler = () => {
-  (messageInfo.chatId = userStore.clickedChat.id),
-    (messageInfo.senderId = userStore.user._id);
+  messageInfo.chatId = userStore.clickedChat.id;
+  messageInfo.senderId = userStore.user._id;
   messageInfo.text = newMessage.value;
   userStore.sendMessage(messageInfo);
-  console.log("SEND MESSGAE", message);
   const bodyInfo = {
     chatId: userStore.clickedChat.id,
     senderId: userStore.user._id,
     receiverId: userStore.friendId,
     text: newMessage.value,
-    // createdAt :
   };
+  messages.push(bodyInfo);
   socket.emit("sendMessage", bodyInfo);
   newMessage.value = "";
 };
 </script>
 
-<script>
+<!-- <script> 
 // import { API_URL } from "../../config";
 // import moment from "moment/moment";
 // import InputEmoji from "react-input-emoji";
@@ -230,6 +232,7 @@ const sendMessageHandler = () => {
 //   },
 // };
 </script>
+-->
 
 <style>
 /* Chat Header */

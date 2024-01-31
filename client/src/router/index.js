@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Chat from "../views/Chat.vue";
 import LoginSignup from "../views/Login-signup.vue";
+import ProfileSettings from "../views/ProfileSettings.vue";
 
 import { isAuthenticated } from "../isAuth";
 // import { hasOwnMetadata } from "core-js/fn/reflect";
@@ -31,6 +32,11 @@ const routes = [
         next("/"); // Redirect to Signin if not authenticated
       }
     },
+  },
+  {
+    path: "/profile-settings",
+    name: "profile-settings",
+    component: ProfileSettings,
   },
   // {
   //   path: "/register",

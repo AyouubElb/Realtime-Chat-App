@@ -15,7 +15,7 @@
     :key="index"
     @click="openChat(chat)"
   >
-    <div class="contact-card-icon me-2">
+    <div class="icon me-2">
       <img :src="require('../../assets/nftIcon.svg')" alt="" />
     </div>
     <div class="text-content">
@@ -32,6 +32,15 @@
           chat.friendInfo && isFriendOnline(chat.friendInfo._id),
       }"
     ></span>
+  </div>
+  <div class="user-panel">
+    <div class="icon me-2">
+      <img :src="require('../../assets/nftIcon.svg')" alt="" />
+    </div>
+    <div class="user_name">{{ userStore.user.name }}</div>
+    <div class="setting-btn" @click="openSetting">
+      <i class="bi bi-gear-fill"></i>
+    </div>
   </div>
 </template>
 <script setup>
@@ -61,11 +70,13 @@ const openChat = (chat) => {
   userStore.clickedChat = clickedChat;
   console.log("clickedChat", userStore.clickedChat);
 };
+const openSetting = () => {};
 
 onMounted(async () => {
+  console.log("user", userStore.user);
   const data = await userStore.fetchChats();
   chats.value = data;
-  console.log("Test", data);
+  // console.log("Test", data);
   userStore.sendNewUser();
   // Fetch user information for each chat member
   for (let i = 0; i < chats.value.length; i++) {
@@ -91,10 +102,7 @@ watchEffect(() => {
 
 const isFriendOnline = (friendId) => {
   if (onlineUsersList) {
-    console.log("Friend ID", friendId);
-    console.log("onlineUsersList", onlineUsersList);
     const isOnline = onlineUsersList.some((onlineUser) => {
-      console.log("Test", onlineUser.user.userId);
       return onlineUser.user.userId === friendId;
     });
     return isOnline;
@@ -199,8 +207,8 @@ const isFriendOnline = (friendId) => {
   background-color: #4d5355;
 }
 
-.contact-card-icon img {
-  width: 3rem;
+.icon img {
+  width: 2.5rem;
   border-radius: 50%;
 }
 
@@ -229,7 +237,7 @@ const isFriendOnline = (friendId) => {
 .contact-online {
   display: inline-block;
   height: 12px;
-  width: 12px;
+  min-width: 12px;
   border-radius: 50%;
   background: rgb(0, 219, 0);
   z-index: 2;
@@ -246,5 +254,25 @@ const isFriendOnline = (friendId) => {
   align-items: center;
   justify-content: center;
   margin-left: auto;
+}
+
+.user-panel {
+  display: flex;
+  background-color: #1d1f25;
+  margin-top: auto;
+  padding: 0.5rem 1rem;
+}
+.user-panel .user_name {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+.setting-btn {
+  color: #d3d3d3;
+  margin: auto 0 auto auto;
+  padding: 6px;
+  cursor: pointer;
+}
+.setting-btn:hover {
+  background-color: #2d2f35;
 }
 </style>
