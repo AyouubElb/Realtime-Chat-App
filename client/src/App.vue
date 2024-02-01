@@ -1,7 +1,7 @@
 <template>
   <main>
     <!-- <Navbar v-if="userStore.isAuthenticated" /> -->
-    <Sidebar v-if="userStore.isAuthenticated" />
+    <Sidebar v-if="this.$route.path === '/'" />
     <router-view />
   </main>
 </template>

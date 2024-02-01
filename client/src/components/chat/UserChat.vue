@@ -38,9 +38,9 @@
       <img :src="require('../../assets/nftIcon.svg')" alt="" />
     </div>
     <div class="user_name">{{ userStore.user.name }}</div>
-    <div class="setting-btn" @click="openSetting">
+    <router-link to="/profile-settings" class="setting-btn">
       <i class="bi bi-gear-fill"></i>
-    </div>
+    </router-link>
   </div>
 </template>
 <script setup>
@@ -70,7 +70,6 @@ const openChat = (chat) => {
   userStore.clickedChat = clickedChat;
   console.log("clickedChat", userStore.clickedChat);
 };
-const openSetting = () => {};
 
 onMounted(async () => {
   console.log("user", userStore.user);
