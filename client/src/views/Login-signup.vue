@@ -15,7 +15,13 @@
           <div class="remember">
             <label><input type="checkbox" /> Remember me</label>
           </div>
-          <button type="submit" @click.prevent="logIn">Login</button>
+          <button
+            class="btn-login-register"
+            type="submit"
+            @click.prevent="logIn"
+          >
+            Login
+          </button>
           <div class="signUp-link">
             <p>
               Don't have an account?
@@ -47,7 +53,7 @@
               conditions</label
             >
           </div>
-          <button type="submit">Sign Up</button>
+          <button class="btn-login-register" type="submit">Sign Up</button>
           <div class="signUp-link">
             <p>
               Already have an account?
@@ -187,7 +193,7 @@ h2 {
 .remember label input {
   accent-color: #0ef;
 }
-button {
+.btn-login-register {
   position: relative;
   width: 100%;
   height: 40px;

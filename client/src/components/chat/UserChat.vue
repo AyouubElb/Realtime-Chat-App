@@ -59,7 +59,7 @@ import axios from "axios";
 const userStore = useUserStore();
 const socket = userStore.socket;
 
-const chats = ref(null);
+const chats = reactive([]);
 const clickedChat = reactive({});
 const userInfo = ref(null);
 const onlineUsersList = reactive([]);
@@ -73,17 +73,18 @@ const openChat = (chat) => {
 
 onMounted(async () => {
   console.log("user", userStore.user);
-  const data = await userStore.fetchChats();
-  chats.value = data;
-  // console.log("Test", data);
+  await userStore.fetchChats().then((res) => {
+    chats.splice(0, chats.length, ...res);
+  });
+
   userStore.sendNewUser();
+
   // Fetch user information for each chat member
-  for (let i = 0; i < chats.value.length; i++) {
-    const chat = chats.value[i];
+  for (let i = 0; i < chats.length; i++) {
+    const chat = chats[i];
     const memberId = chat.members.find((id) => id !== userStore.user._id);
     const friendInfo = await userStore.fetchUserById(memberId);
-    // Assign the user information to the chat object
-    chats.value[i].friendInfo = friendInfo;
+    chats[i].friendInfo = friendInfo;
   }
 });
 
@@ -94,7 +95,6 @@ watchEffect(() => {
       onlineUsers.forEach((user) => {
         onlineUsersList.push({ user });
       });
-      // console.log("onlineUsersLi", onlineUsersList);
     });
   }
 });

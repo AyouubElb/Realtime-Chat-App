@@ -23,7 +23,19 @@ io.on("connection", (socket) => {
   });
 
   socket.on("sendMessage", (data) => {
-    socket.broadcast.emit("receiveMessage", data);
+    const receiver = onlineUsers.find(
+      (user) => user.userId === data.receiverId
+    );
+
+    if (receiver) {
+      socket.to(receiver.socketId).emit("receiveMessage", data);
+      socket.to(receiver.socketId).emit("receiveNotification", {
+        chatId: data.chatId,
+        senderId: data.senderId,
+        isRead: false,
+        date: new Date(),
+      });
+    }
   });
 
   socket.on("disconnect", () => {

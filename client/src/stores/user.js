@@ -42,7 +42,6 @@ export const useUserStore = defineStore("UserStore", {
     async fetchChats() {
       try {
         const res = await axios.get(`${this.API_URL}/chats/${this.user._id}`);
-        // console.log("chats", res.data.chats);
         this.chats = res.data.chats;
         return res.data.chats;
       } catch (error) {

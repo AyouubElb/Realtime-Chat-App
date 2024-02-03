@@ -52,7 +52,13 @@ const messages = reactive([]);
 const messageInfo = reactive({});
 const newMessage = ref("");
 const messagesContainer = ref(null);
+const notifications = reactive([]);
+// const setNotifications = reactive([]);
 
+const formatTimestamp = (timestamp) => {
+  // return moment(timestamp).format("YYYY-MM-DD HH:mm");
+  return moment(timestamp).format("HH:mm");
+};
 // Scroll to the bottom of the messages container
 const scrollToBottom = () => {
   if (messagesContainer.value) {
@@ -78,27 +84,40 @@ watchEffect(() => {
       contact.name = res.name;
     });
     userStore.fetchChatMessages(userStore.clickedChat.id).then((res) => {
-      // console.log("messages", res);
       messages.splice(0, messages.length, ...res); // Update messages with the fetched messages
-      // console.log("MESSAGES", messages);
     });
   }
   const handleReceiveMessage = (data) => {
     messages.push(data);
   };
 
-  socket.on("receiveMessage", handleReceiveMessage);
+  const handleReceiedNotification = (data) => {
+    console.log("handleReceiedNotification");
+    const isChatOpen = data.chatId === userStore.clickedChat.id;
 
-  // Clean up the event listener when the component is unmounted
-  onBeforeUnmount(() => {
-    socket.off("receiveMessage", handleReceiveMessage);
-  });
+    if (isChatOpen) {
+      data.isRead = true;
+      notifications.splice(0, 0, data);
+    } else {
+      notifications.splice(0, 0, data);
+    }
+    console.log("notifications", notifications);
+  };
+
+  // Clean up existing event listeners
+  socket.off("receiveMessage");
+  socket.off("receiveNotification");
+
+  // receive message and notification
+  socket.on("receiveMessage", handleReceiveMessage);
+  socket.on("receiveNotification", handleReceiedNotification);
 });
 
-const formatTimestamp = (timestamp) => {
-  // return moment(timestamp).format("YYYY-MM-DD HH:mm");
-  return moment(timestamp).format("HH:mm");
-};
+// Clean up the event listener when the component is unmounted
+onBeforeUnmount(() => {
+  socket.off("receiveMessage");
+  socket.off("receiveNotification");
+});
 
 const sendMessageHandler = () => {
   messageInfo.chatId = userStore.clickedChat.id;
