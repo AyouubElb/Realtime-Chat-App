@@ -92,7 +92,6 @@ watchEffect(() => {
   };
 
   const handleReceiedNotification = (data) => {
-    console.log("handleReceiedNotification");
     const isChatOpen = data.chatId === userStore.clickedChat.id;
 
     if (isChatOpen) {
@@ -101,6 +100,7 @@ watchEffect(() => {
     } else {
       notifications.splice(0, 0, data);
     }
+    userStore.notifications = notifications;
     console.log("notifications", notifications);
   };
 

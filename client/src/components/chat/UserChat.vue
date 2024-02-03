@@ -24,7 +24,12 @@
     </div>
     <div class="notification-container">
       <div class="date">12/12/2022</div>
-      <div class="this-user-notifications">2</div>
+      <div
+        class="this-user-notifications"
+        v-if="notificationsLength(chat.notifications) > 0"
+      >
+        {{ notificationsLength(chat.notifications) }}
+      </div>
     </div>
     <span
       :class="{
@@ -60,6 +65,7 @@ const userStore = useUserStore();
 const socket = userStore.socket;
 
 const chats = reactive([]);
+const notifications = reactive([]);
 const clickedChat = reactive({});
 const userInfo = ref(null);
 const onlineUsersList = reactive([]);
@@ -75,6 +81,7 @@ onMounted(async () => {
   console.log("user", userStore.user);
   await userStore.fetchChats().then((res) => {
     chats.splice(0, chats.length, ...res);
+    console.log("chats", chats);
   });
 
   userStore.sendNewUser();
@@ -88,6 +95,9 @@ onMounted(async () => {
   }
 });
 
+const unreadNotifications = (notifications) => {
+  return notifications.filter((value) => value.isRead === false);
+};
 watchEffect(() => {
   // get online users
   if (socket != null) {
@@ -97,6 +107,23 @@ watchEffect(() => {
       });
     });
   }
+
+  const updateChatNotifications = () => {
+    const notificationsData = unreadNotifications(userStore.notifications);
+    notifications.splice(0, notifications.length, ...notificationsData);
+    console.log("notifications Test", notifications);
+    chats.forEach((chat) => {
+      chat.notifications = [];
+      notifications.forEach((notification) => {
+        if (chat._id === notification.chatId) {
+          chat.notifications.push(notification);
+          console.log("chat.notifications", chat);
+        }
+      });
+    });
+  };
+
+  updateChatNotifications();
 });
 
 const isFriendOnline = (friendId) => {
@@ -107,6 +134,9 @@ const isFriendOnline = (friendId) => {
     return isOnline;
   }
   return false;
+};
+const notificationsLength = (value) => {
+  return value.length;
 };
 </script>
 

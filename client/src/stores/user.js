@@ -10,6 +10,7 @@ export const useUserStore = defineStore("UserStore", {
         ? localStorage.getItem("jwt_info")
         : null,
       chats: [],
+      notifications: [],
       clickedChat: {},
     };
   },
