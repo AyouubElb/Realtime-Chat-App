@@ -1,7 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Chat from "../views/Chat.vue";
-import LoginSignup from "../views/Login-signup.vue";
-import ProfileSettings from "../views/ProfileSettings.vue";
 
 import { isAuthenticated } from "../isAuth";
 // import { hasOwnMetadata } from "core-js/fn/reflect";
@@ -12,31 +10,33 @@ const routes = [
     name: "Chat",
     component: Chat,
     beforeEnter: (to, from, next) => {
-      // Check if user is authenticated
       if (isAuthenticated()) {
-        next(); // User is authenticated, proceed to the route
+        next();
       } else {
-        next("/login-signup"); // Redirect to Signin if not authenticated
+        next("/login-signup");
       }
     },
   },
   {
     path: "/login-signup",
     name: "LoginSignup",
-    component: LoginSignup,
+    component: () =>
+      import(/* webpackChunkName: "LoginSignup"*/ "@/views/Login-signup.vue"),
     beforeEnter: (to, from, next) => {
-      // Check if user is authenticated
       if (!isAuthenticated()) {
-        next(); // User is authenticated, proceed to the route
+        next();
       } else {
-        next("/"); // Redirect to Signin if not authenticated
+        next("/");
       }
     },
   },
   {
     path: "/profile-settings",
     name: "profile-settings",
-    component: ProfileSettings,
+    component: () =>
+      import(
+        /* webpackChunkName: "ProfileSettings"*/ "@/views/ProfileSettings.vue"
+      ),
   },
   // {
   //   path: "/register",

@@ -17,7 +17,7 @@ io.on("connection", (socket) => {
         userId,
         socketId: socket.id,
       });
-    // console.log("onlineUser : ", onlineUsers);
+    console.log("onlineUser : ", onlineUsers);
 
     io.emit("getOnlineUsers", onlineUsers);
   });
@@ -34,6 +34,7 @@ io.on("connection", (socket) => {
         senderId: data.senderId,
         isRead: false,
         date: new Date(),
+        text: data.text,
       });
     }
   });

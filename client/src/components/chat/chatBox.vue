@@ -6,19 +6,20 @@
     <strong>{{ contact.name }}</strong>
   </div>
   <div class="messages" ref="messagesContainer">
-    <div
-      class="message mb-2"
-      :class="{
-        'self ms-auto': message.senderId == userStore.user._id,
-        '': message.senderId != userStore.user._id,
-      }"
-      v-for="(message, index) in messages"
-      :key="index"
-    >
-      <p style="margin-bottom: 0.2rem">{{ message.text }}</p>
-      <p style="margin-bottom: 0.2rem" class="message-date">
-        {{ formatTimestamp(message.createdAt) }}
-      </p>
+    <div v-for="(message, index) in messages" :key="index">
+      <div
+        class="message mb-2"
+        :class="{
+          'self ms-auto': message.senderId == userStore.user._id,
+          '': message.senderId != userStore.user._id,
+        }"
+        v-if="message.chatId === userStore.clickedChat.id"
+      >
+        <p style="margin-bottom: 0.2rem">{{ message.text }}</p>
+        <p style="margin-bottom: 0.2rem" class="message-date">
+          {{ formatTimestamp(message.createdAt) }}
+        </p>
+      </div>
     </div>
   </div>
   <div class="chat-input">
@@ -85,6 +86,7 @@ watchEffect(() => {
     });
     userStore.fetchChatMessages(userStore.clickedChat.id).then((res) => {
       messages.splice(0, messages.length, ...res); // Update messages with the fetched messages
+      console.log("fetchedMessages", messages);
     });
   }
   const handleReceiveMessage = (data) => {
