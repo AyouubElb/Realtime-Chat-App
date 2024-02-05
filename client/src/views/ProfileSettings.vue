@@ -7,19 +7,13 @@
       </button>
     </div>
     <div class="account">
-      <div class="account-icon-username">
-        <!-- <div class="account-icon">
-          <div>
-            <i class="bi bi-pencil-fill"></i>
-          </div>
-        </div> -->
-        <div class="icon-container">
-          <img
-            :src="require('../assets/nftIcon.svg')"
-            alt=""
-            @mouseover="showPencil()"
-            @mouseleave="hidePencil()"
-          />
+      <div class="setting-sider">
+        <div
+          class="icon-container"
+          @mouseover="showPencil()"
+          @mouseleave="hidePencil()"
+        >
+          <img :src="require('../assets/nftIcon.svg')" />
           <div class="icon-content" v-if="editIcon">
             <i class="bi bi-pencil-fill"></i>
           </div>
@@ -35,34 +29,34 @@
             </router-link>
           </div>
         </div>
-        <div class="account-info-item">
+        <div
+          class="account-info-item"
+          v-for="(info, index) in accountInfo"
+          :key="index"
+        >
           <div class="account-info-text">
-            <div class="account-info-title">Username</div>
-            <div class="account-info-value">{{ userStore.user.name }}</div>
+            <div class="account-info-title">{{ info.title }}</div>
+            <div class="account-info-value">{{ info.value }}</div>
           </div>
           <div class="edit-add-info">
-            <button>Edit</button>
+            <button
+              type="button"
+              data-bs-toggle="modal"
+              :data-bs-target="dynamicModalTarget(info.id)"
+              v-if="info.isEmpty"
+            >
+              Add
+            </button>
+            <button
+              type="button"
+              data-bs-toggle="modal"
+              :data-bs-target="dynamicModalTarget(info.id)"
+              v-if="!info.isEmpty"
+            >
+              Edit
+            </button>
           </div>
-        </div>
-        <div class="account-info-item">
-          <div class="account-info-text">
-            <div class="account-info-title">Email</div>
-            <div class="account-info-value">{{ userStore.user.email }}</div>
-          </div>
-          <div class="edit-add-info">
-            <button>Edit</button>
-          </div>
-        </div>
-        <div class="account-info-item">
-          <div class="account-info-text">
-            <div class="account-info-title">Phone Number</div>
-            <div class="account-info-value">
-              You haven't added a phone number yet.
-            </div>
-          </div>
-          <div class="edit-add-info">
-            <button>Add</button>
-          </div>
+          <UserInfoModal :info="info" />
         </div>
         <hr />
         <div class="password-item">
@@ -76,13 +70,28 @@
   </div>
 </template>
 <script setup>
-import { ref } from "vue";
+import UserInfoModal from "@/components/UserInfoModal";
+import { ref, reactive, computed } from "vue";
 import { API_URL } from "../config";
 import toastr from "toastr";
 import axios from "axios";
 import { useUserStore } from "../stores/user";
 const userStore = useUserStore();
 const editIcon = ref(false);
+const accountInfo = reactive([
+  { id: 1, title: "Username", value: userStore.user.name, isEmpty: false },
+  { id: 2, title: "Email", value: userStore.user.email, isEmpty: false },
+  {
+    id: 3,
+    title: "Phone Number",
+    value: "You haven't added a phone number yet.",
+    isEmpty: true,
+  },
+]);
+
+const dynamicModalTarget = (id) => {
+  return `#userInfoModal${id}`;
+};
 
 const logOut = () => {
   axios
@@ -128,21 +137,21 @@ const hidePencil = () => {
   border-radius: 6px;
   background-color: #1d1f25;
 }
-.account-icon-username {
+.setting-sider {
   display: flex;
   min-width: 150px;
   flex-direction: column;
-  padding: 1rem 0;
+  padding: 2rem 0;
 }
 .icon-container {
   position: relative;
   margin-bottom: 6px;
+  margin-inline: auto;
 }
 .icon-container img {
   width: 5rem;
   border-radius: 50%;
   cursor: pointer;
-  margin-inline: auto;
   transition: box-shadow 0.3s ease;
 }
 .icon-container .icon-content {
@@ -160,7 +169,7 @@ const hidePencil = () => {
 .icon-container .icon-content i {
   margin: auto;
 }
-.account-icon-username p {
+.setting-sider p {
   font-size: 1.25rem;
   font-weight: 600;
   margin-inline: auto;

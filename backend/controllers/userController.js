@@ -104,3 +104,19 @@ exports.findUser = async (req, res) => {
     user: req.profile,
   });
 };
+
+exports.updateUser = async (res, req) => {
+  try {
+    console.log("id", req.profile._id);
+    console.log("user", req.body);
+    const user = userModel.findByIdAndUpdate(
+      { _id: req.profile._id },
+      { $set: req.body },
+      { new: true }
+    );
+    res.status(200).json({ user: req.profile });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json(error.message);
+  }
+};
