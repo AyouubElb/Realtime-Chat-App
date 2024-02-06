@@ -3,7 +3,7 @@
     <div class="chat-header-icon">
       <img :src="require('../../assets/nftIcon.svg')" alt="" />
     </div>
-    <strong>{{ contact.name }}</strong>
+    <strong>{{ contact.username }}</strong>
   </div>
   <div class="messages" ref="messagesContainer">
     <div v-for="(message, index) in messages" :key="index">
@@ -82,7 +82,7 @@ watchEffect(() => {
     // console.log("ID", id);
 
     userStore.fetchUserById(id).then((res) => {
-      contact.name = res.name;
+      contact.username = res.username;
     });
     userStore.fetchChatMessages(userStore.clickedChat.id).then((res) => {
       messages.splice(0, messages.length, ...res); // Update messages with the fetched messages

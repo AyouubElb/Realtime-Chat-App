@@ -17,7 +17,7 @@ io.on("connection", (socket) => {
         userId,
         socketId: socket.id,
       });
-    console.log("onlineUser : ", onlineUsers);
+    // console.log("onlineUser : ", onlineUsers);
 
     io.emit("getOnlineUsers", onlineUsers);
   });

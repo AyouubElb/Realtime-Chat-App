@@ -6,11 +6,11 @@ const userModel = require("../models/userModel");
 
 exports.registration = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { username, email, password } = req.body;
 
     let user = await userModel.findOne({ email });
 
-    if (!name || !email || !password) {
+    if (!username || !email || !password) {
       return res.status(400).json({ error: "All fields are required !" });
     }
 
@@ -31,14 +31,14 @@ exports.registration = async (req, res) => {
       });
     }
 
-    user = new userModel({ name, email, password });
+    user = new userModel({ username, email, password });
 
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(user.password, salt);
 
     await user.save();
 
-    res.status(200).json({ _id: user._id, name, email });
+    res.status(200).json({ _id: user._id, username, email });
   } catch (error) {
     console.log(error.message);
     res.status(500).json(error.message);
@@ -68,7 +68,12 @@ exports.loginUser = async (req, res) => {
 
     return res.json({
       token,
-      user: { _id: user._id, name: user.name, email: email, role: user.role },
+      user: {
+        _id: user._id,
+        username: user.username,
+        email: email,
+        role: user.role,
+      },
     });
   } catch (error) {
     console.log(error.message);
@@ -105,16 +110,39 @@ exports.findUser = async (req, res) => {
   });
 };
 
-exports.updateUser = async (res, req) => {
+exports.updateUser = async (req, res) => {
   try {
     console.log("id", req.profile._id);
     console.log("user", req.body);
-    const user = userModel.findByIdAndUpdate(
+    const result = await userModel.findByIdAndUpdate(
       { _id: req.profile._id },
       { $set: req.body },
       { new: true }
     );
-    res.status(200).json({ user: req.profile });
+    res.status(200).json({ user: result });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json(error.message);
+  }
+};
+
+exports.updateUserPassword = async (req, res) => {
+  try {
+    const password = req.body.password;
+    let user = req.profile;
+    console.log("password", password);
+    console.log("user", user);
+    if (!validator.isStrongPassword(password)) {
+      return res.status(400).json({
+        error:
+          "Password must be a strong password : { minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1}",
+      });
+    }
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(user.password, salt);
+
+    user.save();
+    res.status(200).json({ user: user, password: password });
   } catch (error) {
     console.log(error.message);
     res.status(500).json(error.message);

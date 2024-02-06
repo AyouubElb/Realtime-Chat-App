@@ -6,6 +6,7 @@ const {
   signout,
   findUser,
   updateUser,
+  updateUserPassword,
   getAllUsers,
 } = require("../controllers/userController");
 
@@ -24,6 +25,8 @@ router.get("/signout", signout);
 router.get("/find/:userId", findUser);
 
 router.put("/update/:userId", updateUser);
+
+router.put("/update-user-password/:userId", updateUserPassword);
 
 router.get("/", requireSignIn, getAllUsers);
 

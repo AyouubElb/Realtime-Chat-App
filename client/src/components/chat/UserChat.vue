@@ -4,7 +4,7 @@
   </div>
   <div class="text-content">
     <div class="name" v-if="chat.friendInfo">
-      {{ chat.friendInfo.name }}
+      {{ chat.friendInfo.username }}
     </div>
     <div class="text" v-If="getLastUnread(chat.notifications)?.text">
       {{ getLastUnread(chat.notifications)?.text }}

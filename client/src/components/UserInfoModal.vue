@@ -11,7 +11,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="userInfoModalLabel">
+          <h1 class="modal-title" id="userInfoModalLabel">
             {{ modalTitle }}
           </h1>
           <button
@@ -33,17 +33,23 @@
           >
             Close
           </button>
-          <button type="button" class="btn btn-primary">Save Changes</button>
+          <button type="button" class="btn btn-primary" @click="updateUser()">
+            Save Changes
+          </button>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script setup>
+import axios from "axios";
 import { defineProps, computed } from "vue";
+import { useUserStore } from "@/stores/user";
 const props = defineProps({
   info: Object,
 });
+
+const userStore = useUserStore();
 
 const modalTitle = computed(() => {
   return props.info.isEmpty
@@ -54,33 +60,26 @@ const modalTitle = computed(() => {
 const dynamicModalTarget = computed(() => {
   return `userInfoModal${props.info.id}`;
 });
-</script>
-<style>
-.modal-content {
-  color: white;
-  background-color: #3a4042;
-  border-radius: 6px;
-}
-.modal-body {
-  padding: 2rem;
-}
-.modal-body-title {
-  text-transform: UPPERCASE;
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-.modal-body input {
-  width: 100%;
-  border-radius: 3px;
-  padding: 4px 8px;
-  background-color: #282a30;
-  color: #f0f0f0;
-  border: 1px solid #282a30;
-}
 
-.modal-content button {
-  border-radius: 4px;
-  padding: 4px 14px;
-}
-</style>
+const userData = computed(() => {
+  const attribut = props.info.title;
+  return { [attribut]: props.info.value };
+});
+
+const updateUser = async () => {
+  const attribut = props.info.title;
+  const value = props.info.value;
+  try {
+    const response = await axios.put(
+      `${userStore.API_URL}/users/update/${userStore.user._id}`,
+      { [attribut]: value }
+    );
+
+    let jwt = JSON.parse(userStore.jwt);
+    jwt.data.user = { ...jwt.data.user, [attribut]: value };
+    localStorage.setItem("jwt_info", JSON.stringify(jwt));
+  } catch (error) {
+    console.log(error);
+  }
+};
+</script>

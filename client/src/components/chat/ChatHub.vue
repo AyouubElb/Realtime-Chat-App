@@ -22,7 +22,7 @@
     <div class="icon me-2">
       <img :src="require('../../assets/nftIcon.svg')" alt="" />
     </div>
-    <div class="user_name">{{ userStore.user.name }}</div>
+    <div class="user_name">{{ userStore.user.username }}</div>
     <router-link to="/profile-settings" class="setting-btn">
       <i class="bi bi-gear-fill"></i>
     </router-link>

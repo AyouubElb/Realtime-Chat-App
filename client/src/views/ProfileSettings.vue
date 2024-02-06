@@ -18,7 +18,7 @@
             <i class="bi bi-pencil-fill"></i>
           </div>
         </div>
-        <p>{{ userStore.user.name }}</p>
+        <p>{{ username }}</p>
       </div>
       <div class="account-info">
         <div class="account-info-header">
@@ -62,8 +62,15 @@
         <div class="password-item">
           <div class="password-header-text">Password and Authentication</div>
           <div class="edit-password-btn">
-            <button>Change Password</button>
+            <button
+              type="button"
+              data-bs-toggle="modal"
+              data-bs-target="#changePassswordModal"
+            >
+              Change Password
+            </button>
           </div>
+          <ChangePasswordModal />
         </div>
       </div>
     </div>
@@ -71,19 +78,21 @@
 </template>
 <script setup>
 import UserInfoModal from "@/components/UserInfoModal";
-import { ref, reactive, computed } from "vue";
-import { API_URL } from "../config";
+import ChangePasswordModal from "@/components/ChangePasswordModal";
+import { ref, reactive, watchEffect } from "vue";
+import { API_URL } from "@/config";
 import toastr from "toastr";
 import axios from "axios";
-import { useUserStore } from "../stores/user";
+import { useUserStore } from "@/stores/user";
 const userStore = useUserStore();
 const editIcon = ref(false);
+const username = ref(userStore.user.username);
 const accountInfo = reactive([
-  { id: 1, title: "Username", value: userStore.user.name, isEmpty: false },
-  { id: 2, title: "Email", value: userStore.user.email, isEmpty: false },
+  { id: 1, title: "username", value: userStore.user.username, isEmpty: false },
+  { id: 2, title: "email", value: userStore.user.email, isEmpty: false },
   {
     id: 3,
-    title: "Phone Number",
+    title: "phone number",
     value: "You haven't added a phone number yet.",
     isEmpty: true,
   },
@@ -95,7 +104,7 @@ const dynamicModalTarget = (id) => {
 
 const logOut = () => {
   axios
-    .get(`${API_URL}/users/signout`)
+    .get(`${userStore.API_URL}/users/signout`)
     .then(() => {
       toastr.info("User Signout", "See You Next Time", {
         positionClass: "toast-bottom-left",
@@ -113,6 +122,10 @@ const showPencil = () => {
 const hidePencil = () => {
   editIcon.value = false;
 };
+
+watchEffect(() => {
+  username.value = accountInfo[0].value;
+});
 </script>
 <style>
 .profile-setting-container {
@@ -239,5 +252,45 @@ hr {
 }
 .edit-password-btn button:hover {
   background-color: #1560bd;
+}
+
+/* Modal */
+
+.modal-content {
+  color: white;
+  background-color: #3a4042;
+  border-radius: 6px;
+}
+.modal-title {
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+.modal-body {
+  padding: 2rem;
+}
+.modal-body-title {
+  text-transform: UPPERCASE;
+  color: #d3d3d3;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.modal-body input {
+  width: 100%;
+  border-radius: 3px;
+  padding: 4px 8px;
+  background-color: #282a30;
+  color: #f0f0f0;
+  border: 1px solid #282a30;
+  margin-bottom: 1rem;
+}
+
+.modal-body input:last-child {
+  margin-bottom: 0;
+}
+
+.modal-content button {
+  border-radius: 4px;
+  padding: 4px 14px;
 }
 </style>
