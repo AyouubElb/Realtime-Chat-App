@@ -1,7 +1,7 @@
 <template>
   <div class="profile-setting-container">
     <div class="log-out">
-      <button @click="logOut">
+      <button @click="logout">
         Log Out
         <i class="bi bi-box-arrow-in-down-right"></i>
       </button>
@@ -10,6 +10,8 @@
       <div class="setting-sider">
         <div
           class="icon-container"
+          data-bs-toggle="modal"
+          data-bs-target="#ImageProfileModal"
           @mouseover="showPencil()"
           @mouseleave="hidePencil()"
         >
@@ -18,6 +20,7 @@
             <i class="bi bi-pencil-fill"></i>
           </div>
         </div>
+        <ImageProfileModal />
         <p>{{ username }}</p>
       </div>
       <div class="account-info">
@@ -43,17 +46,8 @@
               type="button"
               data-bs-toggle="modal"
               :data-bs-target="dynamicModalTarget(info.id)"
-              v-if="info.isEmpty"
             >
-              Add
-            </button>
-            <button
-              type="button"
-              data-bs-toggle="modal"
-              :data-bs-target="dynamicModalTarget(info.id)"
-              v-if="!info.isEmpty"
-            >
-              Edit
+              {{ info.isEmpty ? "Add" : "Edit" }}
             </button>
           </div>
           <UserInfoModal :info="info" />
@@ -79,6 +73,7 @@
 <script setup>
 import UserInfoModal from "@/components/UserInfoModal";
 import ChangePasswordModal from "@/components/ChangePasswordModal";
+import ImageProfileModal from "@/components/ImageProfileModal";
 import { ref, reactive, watchEffect } from "vue";
 import { API_URL } from "@/config";
 import toastr from "toastr";
@@ -102,7 +97,7 @@ const dynamicModalTarget = (id) => {
   return `#userInfoModal${id}`;
 };
 
-const logOut = () => {
+const logout = () => {
   axios
     .get(`${userStore.API_URL}/users/signout`)
     .then(() => {

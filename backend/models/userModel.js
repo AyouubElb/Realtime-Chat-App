@@ -23,6 +23,10 @@ const userSchema = mongoose.Schema(
       maxlength: 1024,
       unique: true,
     },
+    image: {
+      type: String,
+      required: false,
+    },
   },
   { timestamps: true }
 );

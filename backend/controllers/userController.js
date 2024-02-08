@@ -50,7 +50,7 @@ exports.loginUser = async (req, res) => {
 
   try {
     let user = await userModel.findOne({ email });
-
+    console.log("Test", user.password);
     if (!user) {
       return res.status(400).json({ error: "Invalid email or password !" });
     }
@@ -111,6 +111,8 @@ exports.findUser = async (req, res) => {
 };
 
 exports.updateUser = async (req, res) => {
+  const image = req.body;
+  console.log("image", image);
   try {
     console.log("id", req.profile._id);
     console.log("user", req.body);
@@ -128,23 +130,33 @@ exports.updateUser = async (req, res) => {
 
 exports.updateUserPassword = async (req, res) => {
   try {
-    const password = req.body.password;
+    const { currentPassword, newPassword } = req.body;
     let user = req.profile;
-    console.log("password", password);
-    console.log("user", user);
-    if (!validator.isStrongPassword(password)) {
+
+    const isValidPassword = await bcrypt.compare(
+      currentPassword,
+      user.password
+    );
+
+    if (!isValidPassword) {
+      return res.status(400).json({
+        error:
+          "Current password is incorrect. Please double-check and try again.",
+      });
+    }
+
+    if (!validator.isStrongPassword(newPassword)) {
       return res.status(400).json({
         error:
           "Password must be a strong password : { minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1}",
       });
     }
     const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(user.password, salt);
+    user.password = await bcrypt.hash(newPassword, salt);
 
     user.save();
-    res.status(200).json({ user: user, password: password });
+    res.status(200).json({ message: "Password Updated SuccessFully !" });
   } catch (error) {
-    console.log(error.message);
     res.status(500).json(error.message);
   }
 };
