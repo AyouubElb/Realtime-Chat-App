@@ -71,9 +71,9 @@
   </div>
 </template>
 <script setup>
-import UserInfoModal from "@/components/UserInfoModal";
-import ChangePasswordModal from "@/components/ChangePasswordModal";
-import ImageProfileModal from "@/components/ImageProfileModal";
+import UserInfoModal from "@/components/modals/UserInfoModal";
+import ChangePasswordModal from "@/components/modals/ChangePasswordModal";
+import ImageProfileModal from "@/components/modals/ImageProfileModal";
 import { ref, reactive, watchEffect } from "vue";
 import { API_URL } from "@/config";
 import toastr from "toastr";

@@ -2,13 +2,12 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-const multer = require("multer");
-const path = require("path");
 
 // Import Routes
 const userRoutes = require("./routes/userRoute");
 const chatRoutes = require("./routes/chatRoute");
 const messageRoutes = require("./routes/messageRoute");
+const imageRoutes = require("./routes/imageRoute");
 
 // config app
 const app = express();
@@ -106,11 +105,7 @@ require("dotenv").config();
 
 /********************* */
 // Middleware
-app.use(bodyParser.json({ limit: "50mb" }));
-app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 
-// Parse base64 encoded data
-app.use(bodyParser.raw({ limit: "50mb", type: "image/*" }));
 app.use(cors());
 app.use(express.json());
 
@@ -118,6 +113,7 @@ app.use(express.json());
 app.use("/api/users", userRoutes);
 app.use("/api/chats", chatRoutes);
 app.use("/api/messages", messageRoutes);
+app.use("/api/images", imageRoutes);
 
 //Run the app
 const port = process.env.PORT || 5000;

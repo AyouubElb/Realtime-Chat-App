@@ -2,11 +2,10 @@ const mongoose = require("mongoose");
 
 const imageSchema = mongoose.Schema(
   {
-    image: String,
+    data: Buffer,
+    contentType: String,
   },
-  //   {
-  //     collection: "ImageDetails",
-  //   },
+
   { timestamps: true }
 );
 
