@@ -28,7 +28,7 @@ router.put("/update/:userId", updateUser);
 
 router.put("/update-user-password/:userId", updateUserPassword);
 
-router.get("/", requireSignIn, getAllUsers);
+router.get("/", getAllUsers);
 
 router.param("userId", userById);
 

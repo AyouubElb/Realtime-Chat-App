@@ -1,11 +1,14 @@
 <template>
   <div class="sidebar">
     <div class="sidebar-icon">
-      <img :src="require('../assets/nftIcon.svg')" alt="" />
+      <img :src="userStore.profileImageUrl" alt="" />
     </div>
   </div>
 </template>
-<script setup></script>
+<script setup>
+import { useUserStore } from "@/stores/user";
+const userStore = useUserStore();
+</script>
 <style>
 .sidebar {
   height: 100vh;

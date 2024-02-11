@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { ObjectId } = mongoose.Schema;
 
 const userSchema = mongoose.Schema(
   {
@@ -24,7 +25,8 @@ const userSchema = mongoose.Schema(
       unique: true,
     },
     image: {
-      type: String,
+      type: ObjectId,
+      ref: "Image",
       required: false,
     },
   },

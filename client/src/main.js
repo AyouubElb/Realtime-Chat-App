@@ -12,7 +12,4 @@ import "toastr/build/toastr.css";
 const app = createApp(App);
 app.use(createPinia());
 
-// Create a global socket instance
-// app.config.globalProperties.$socket = io("http://localhost:3000"); // Replace with your server URL
-
 app.use(router).mount("#app");

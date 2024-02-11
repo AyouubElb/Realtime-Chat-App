@@ -1,6 +1,7 @@
 const imageModel = require("../models/imageModel");
 const formidable = require("formidable");
 const fs = require("fs");
+const path = require("path");
 
 exports.uploadImage = async (req, res) => {
   try {
@@ -37,37 +38,6 @@ exports.uploadImage = async (req, res) => {
   }
 };
 
-// exports.getAllImages = async (req, res) => {
-//   try {
-//     const images = await imageModel.find();
-
-//     if (images) {
-//       const imageBuffers = [];
-//       let contentType = "";
-
-//       images.forEach((image) => {
-//         const { data, contentType: imageContentType } = image;
-
-//         if (data) {
-//           imageBuffers.push(data);
-//           contentType = imageContentType;
-//         }
-//       });
-
-//       if (imageBuffers.length > 0) {
-//         const concatenatedBuffer = Buffer.concat(imageBuffers);
-//         res.set("Content-Type", contentType);
-//         res.send(concatenatedBuffer);
-//       } else {
-//         res.status(404).send("No images found");
-//       }
-//     }
-//   } catch (error) {
-//     console.error("Error fetching images:", error);
-//     res.status(500).json({ error: "Error fetching images" });
-//   }
-// };
-
 exports.getAllImages = async (req, res) => {
   try {
     const images = await imageModel.find();
@@ -75,5 +45,16 @@ exports.getAllImages = async (req, res) => {
   } catch (error) {
     console.error("Error fetching images:", error);
     res.status(500).json({ error: "Error fetching images" });
+  }
+};
+
+exports.getImageById = async (req, res) => {
+  try {
+    const id = req.params.imageId;
+    const image = await imageModel.findById(id);
+    res.send(image);
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json(error.message);
   }
 };

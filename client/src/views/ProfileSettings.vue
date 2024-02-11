@@ -15,7 +15,7 @@
           @mouseover="showPencil()"
           @mouseleave="hidePencil()"
         >
-          <img :src="require('../assets/nftIcon.svg')" />
+          <img :src="userStore.profileImageUrl" />
           <div class="icon-content" v-if="editIcon">
             <i class="bi bi-pencil-fill"></i>
           </div>
@@ -74,7 +74,7 @@
 import UserInfoModal from "@/components/modals/UserInfoModal";
 import ChangePasswordModal from "@/components/modals/ChangePasswordModal";
 import ImageProfileModal from "@/components/modals/ImageProfileModal";
-import { ref, reactive, watchEffect } from "vue";
+import { ref, reactive, watchEffect, onMounted } from "vue";
 import { API_URL } from "@/config";
 import toastr from "toastr";
 import axios from "axios";

@@ -4,7 +4,11 @@ const path = require("path");
 const imageModel = require("../models/imageModel");
 const fs = require("fs");
 
-const { uploadImage, getAllImages } = require("../controllers/imageController");
+const {
+  uploadImage,
+  getAllImages,
+  getImageById,
+} = require("../controllers/imageController");
 
 const router = express.Router();
 
@@ -40,5 +44,7 @@ router.post("/upload-image", upload.single("myImage"), async (req, res) => {
   }
 });
 router.get("/", getAllImages);
+
+router.get("/:imageId", getImageById);
 
 module.exports = router;

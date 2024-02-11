@@ -38,7 +38,6 @@
             <div class="selection-image-container">
               <div
                 class="upload-image bg-light"
-                @click="fetchAvatarList"
                 data-bs-toggle="modal"
                 data-bs-target="#AvatarListModal"
               >
@@ -89,7 +88,13 @@
         </div>
         <div class="modal-body" style="padding: 1rem">
           <div class="grid-container">
-            <div class="avatar-image">
+            <div
+              v-for="(imageUrl, index) in imageUrlList"
+              :key="index"
+              class="avatar-image"
+              :class="{ 'avatar-image-active': clickedAvatar == index }"
+              @click="clickedAvatar = index"
+            >
               <img :src="imageUrl" alt="" />
             </div>
           </div>
@@ -102,7 +107,7 @@
           >
             Close
           </button>
-          <button type="button" class="btn btn-primary" @click="saveImage">
+          <button type="button" class="btn btn-primary" @click="updateImage">
             Save Image
           </button>
         </div>
@@ -111,18 +116,16 @@
   </div>
 </template>
 <script setup>
-import AvatarListModal from "@/components/modals/AvatarListModal.vue";
 import axios from "axios";
 import toastr from "toastr";
 import { Buffer } from "buffer";
-import { reactive, ref } from "vue";
+import { reactive, ref, onMounted } from "vue";
 import { useUserStore } from "@/stores/user";
 const userStore = useUserStore();
 const fileInput = ref(null);
 const base64Image = ref(null);
-const avatarList = reactive([]);
-const base64String = ref(null);
-const imageUrl = ref(null);
+const imageUrlList = reactive([]);
+const clickedAvatar = ref(null);
 
 const handleFileUpload = () => {
   const file = fileInput.value.files[0];
@@ -137,12 +140,23 @@ const handleFileUpload = () => {
   }
 };
 
-const saveImage = async () => {
+const updateImage = async () => {
   try {
     const response = await axios.put(
       `${userStore.API_URL}/users/update/${userStore.user._id}`,
-      { image: base64Image.value }
+      { image: userStore.avatarList[clickedAvatar.value]._id }
     );
+
+    // update user image id in local storage
+    let jwt = JSON.parse(userStore.jwt);
+    jwt.data.user = {
+      ...jwt.data.user,
+      image: userStore.avatarList[clickedAvatar.value]._id,
+    };
+    localStorage.setItem("jwt_info", JSON.stringify(jwt));
+
+    // update image before refresh
+    userStore.profileImageUrl = imageUrlList[clickedAvatar.value];
   } catch (error) {
     console.log(error);
   }
@@ -154,21 +168,27 @@ const triggerFileInputClick = () => {
 
 const fetchAvatarList = async () => {
   try {
-    const response = await axios.get(`${userStore.API_URL}/images`);
-    avatarList.splice(0, avatarList.length, ...response.data);
-    base64String.value = Buffer.from(
-      avatarList[0].data.data,
-      "binary"
-    ).toString("base64");
+    for (var i = 0; i < userStore.avatarList.length; i++) {
+      const base64String = Buffer.from(
+        userStore.avatarList[i].data.data,
+        "binary"
+      ).toString("base64");
 
-    imageUrl.value = `data:image/png;base64,${base64String.value}`;
-
-    // console.log("avartarList", avatarList);
-    // console.log("base64String", base64String.value);
+      const imageUrl = `data:image/jpg;base64,${base64String}`;
+      imageUrlList.push(imageUrl);
+    }
   } catch (error) {
     console.log(error);
   }
 };
+
+// const saveImage = async () => {
+//   console.log("clickedAvatar", clickedAvatar.value);
+// };
+
+onMounted(() => {
+  fetchAvatarList();
+});
 </script>
 <style>
 .image-management-container {
@@ -213,14 +233,17 @@ const fetchAvatarList = async () => {
 }
 .grid-container {
   display: grid;
-  grid-template-columns: auto auto auto auto auto;
+  grid-template-columns: auto auto auto auto;
   gap: 10px;
 }
 .avatar-image {
-  /* background-image: url("@/assets/nftIcon.svg");
-  background-repeat: no-repeat;
-  background-size: cover;
-  padding: 3rem; */
   cursor: pointer;
+}
+
+/* .avatar-image:hover {
+  border: 2px solid #f0f0f0;
+} */
+.avatar-image-active {
+  border: 2px solid #f0f0f0;
 }
 </style>

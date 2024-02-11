@@ -20,7 +20,7 @@
   </div>
   <div class="user-panel">
     <div class="icon me-2">
-      <img :src="require('../../assets/nftIcon.svg')" alt="" />
+      <img :src="userStore.profileImageUrl" alt="" />
     </div>
     <div class="user_name">{{ userStore.user.username }}</div>
     <router-link to="/profile-settings" class="setting-btn">

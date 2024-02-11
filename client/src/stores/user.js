@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import axios from "axios";
 import { io } from "socket.io-client";
+import { Buffer } from "buffer";
 
 export const useUserStore = defineStore("UserStore", {
   state: () => {
@@ -9,9 +10,12 @@ export const useUserStore = defineStore("UserStore", {
       jwt: localStorage.getItem("jwt_info")
         ? localStorage.getItem("jwt_info")
         : null,
+      profileImage: null,
+      profileImageUrl: "",
       chats: [],
       notifications: [],
       clickedChat: {},
+      avatarList: [],
     };
   },
   getters: {
@@ -72,6 +76,28 @@ export const useUserStore = defineStore("UserStore", {
           messageInfo
         );
         // console.log("message response", res);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async fetchUserImage() {
+      try {
+        const res = await axios.get(
+          `${this.API_URL}/images/${this.user.image}`
+        );
+        this.profileImage = Buffer.from(res.data.data, "binary").toString(
+          "base64"
+        );
+        this.profileImageUrl = `data:image/jpg;base64,${this.profileImage}`;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async fetchAvatarImages() {
+      try {
+        const response = await axios.get(`${this.API_URL}/images`);
+        this.avatarList.splice(0, this.avatarList.length, ...response.data);
+        console.log("fetchAvatarImages", this.avatarList);
       } catch (error) {
         console.log(error);
       }
