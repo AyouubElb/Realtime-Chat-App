@@ -1,7 +1,7 @@
 <template>
   <div class="profile-setting-container">
     <div class="log-out">
-      <button @click="logout">
+      <button @click="handleLogout">
         Log Out
         <i class="bi bi-box-arrow-in-down-right"></i>
       </button>
@@ -27,7 +27,7 @@
         <div class="account-info-header">
           <div class="title">My Profile</div>
           <div class="close-profile-setting">
-            <router-link to="/">
+            <router-link to="/chat-page">
               <i class="bi bi-x-circle"></i>
             </router-link>
           </div>
@@ -78,8 +78,12 @@ import { ref, reactive, watchEffect, onMounted } from "vue";
 import { API_URL } from "@/config";
 import toastr from "toastr";
 import axios from "axios";
+import { useAuth0 } from "@auth0/auth0-vue";
 import { useUserStore } from "@/stores/user";
+
 const userStore = useUserStore();
+const { logout } = useAuth0();
+
 const editIcon = ref(false);
 const username = ref(userStore.user.username);
 const accountInfo = reactive([
@@ -97,18 +101,23 @@ const dynamicModalTarget = (id) => {
   return `#userInfoModal${id}`;
 };
 
-const logout = () => {
-  axios
-    .get(`${userStore.API_URL}/users/signout`)
-    .then(() => {
-      toastr.info("User Signout", "See You Next Time", {
-        positionClass: "toast-bottom-left",
-      });
-      localStorage.removeItem("jwt_info");
-      // this.$socket.disconnect();
-      // this.$router.push("/login-signup");
-    })
-    .catch();
+const handleLogout = () => {
+  logout({
+    logoutParams: {
+      returnTo: window.location.origin,
+    },
+  });
+  // axios
+  //   .get(`${userStore.API_URL}/users/signout`)
+  //   .then(() => {
+  //     toastr.info("User Signout", "See You Next Time", {
+  //       positionClass: "toast-bottom-left",
+  //     });
+  //     localStorage.removeItem("jwt_info");
+  //     // this.$socket.disconnect();
+  //     // this.$router.push("/login-signup");
+  //   })
+  //   .catch();
 };
 
 const showPencil = () => {

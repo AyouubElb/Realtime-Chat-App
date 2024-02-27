@@ -26,11 +26,11 @@ require("dotenv").config();
 app.use(cors());
 app.use(express.json());
 // enforce on all endpoints
-app.use(jwtCheck);
+// app.use(jwtCheck);
 
-app.get("/Test", Guard.check(["read: userInfo"]), (req, res) => {
-  res.send("Secured Resource");
-});
+// app.get("/Test", Guard.check(["read: userInfo"]), (req, res) => {
+//   res.send("Secured Resource");
+// });
 
 // Routes Middleware
 app.use("/api/users", userRoutes);

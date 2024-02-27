@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Chat from "../views/Chat.vue";
+import HomeView from "@/views/HomeView";
 
 import { isAuthenticated } from "../isAuth";
 // import { hasOwnMetadata } from "core-js/fn/reflect";
@@ -7,28 +7,19 @@ import { isAuthenticated } from "../isAuth";
 const routes = [
   {
     path: "/",
-    name: "Chat",
-    component: Chat,
-    beforeEnter: (to, from, next) => {
-      if (isAuthenticated()) {
-        next();
-      } else {
-        next("/login-signup");
-      }
-    },
+    name: "HomeView",
+    component: HomeView,
+  },
+  {
+    path: "/chat-page",
+    name: "ChatPage",
+    component: () => import(/* webpackChunkName: "Chat"*/ "@/views/Chat"),
   },
   {
     path: "/login-signup",
     name: "LoginSignup",
     component: () =>
       import(/* webpackChunkName: "LoginSignup"*/ "@/views/Login-signup.vue"),
-    beforeEnter: (to, from, next) => {
-      if (!isAuthenticated()) {
-        next();
-      } else {
-        next("/");
-      }
-    },
   },
   {
     path: "/profile-settings",

@@ -11,8 +11,29 @@
             <span
               class="nav-link text-light"
               style="cursor: pointer"
-              @click="signOut"
-              >SignOut
+              @click="testApi"
+              >Test Button
+            </span>
+          </li>
+          <li class="nav-item mx-2" v-if="!isAuthenticated">
+            <span
+              class="nav-link text-light"
+              style="cursor: pointer"
+              @click="handleLogin"
+              >Login
+            </span>
+          </li>
+          <li class="nav-item mx-2" v-if="!isAuthenticated">
+            <span class="nav-link text-light" style="cursor: pointer"
+              >Signup
+            </span>
+          </li>
+          <li class="nav-item mx-2" v-if="isAuthenticated">
+            <span
+              class="nav-link text-light"
+              style="cursor: pointer"
+              @click="handleLogout"
+              >Logout
             </span>
           </li>
         </ul>
@@ -25,23 +46,45 @@ import { ref } from "vue";
 import { API_URL } from "../config";
 import toastr from "toastr";
 import axios from "axios";
+import { useAuth0 } from "@auth0/auth0-vue";
 
-const signOut = () => {
-  axios
-    .get(`${API_URL}/users/signout`)
-    .then(() => {
-      toastr.info("User Signout", "See You Next Time", {
-        positionClass: "toast-bottom-left",
-      });
-      localStorage.removeItem("jwt_info");
-      this.$socket.disconnect();
-      this.$router.push("/login");
-    })
-    .catch();
+const { loginWithRedirect, logout, isAuthenticated, getAccessTokenSilently } =
+  useAuth0();
+
+const handleLogin = () => {
+  loginWithRedirect({
+    appState: {
+      target: "/chat-page",
+    },
+  });
+};
+const handleLogout = () => {
+  logout({
+    logoutParams: {
+      returnTo: window.location.origin,
+    },
+  });
+};
+
+const testApi = async () => {
+  try {
+    const accessToken = await getAccessTokenSilently();
+    const response = await axios.get("http://localhost:8000/api/users", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    console.log("protected response", response.data);
+  } catch (error) {
+    console.log(error);
+  }
 };
 </script>
 
 <style>
+.navbar {
+  width: 100%;
+}
 .navbar-collapse {
   /* make it take only the width of its content(important for ml-auto) */
   flex-grow: 0 !important;

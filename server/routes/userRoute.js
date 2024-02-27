@@ -10,6 +10,8 @@ const {
   getAllUsers,
 } = require("../controllers/userController");
 
+const { validateAccessToken } = require("../middlewares/auth0.middleware");
+
 const { requireSignIn, isAuth } = require("../middlewares/auth");
 
 const { userById } = require("../middlewares/user");
@@ -28,7 +30,7 @@ router.put("/update/:userId", updateUser);
 
 router.put("/update-user-password/:userId", updateUserPassword);
 
-router.get("/", getAllUsers);
+router.get("/", validateAccessToken, getAllUsers);
 
 router.param("userId", userById);
 
